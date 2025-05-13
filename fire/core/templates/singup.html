@@ -7,3 +7,57 @@
     <title>FYRE-signup</title>
     <link rel="stylesheet" href="{% static 'css/singup.css' %}">
 </head>
+<body>
+    <div class="wrapper">
+      <form action="{% url 'singup_view' %}" method="post">
+        {% csrf_token %}
+  
+        {% if error %}
+          <div class="error">
+            <p style="color: red;">{{ error }}</p>
+          </div>
+        {% endif %}
+  
+        <h2>Register</h2>
+  
+        <div class="input-field">
+          <input type="text" name="username" required />
+          <label>Username</label>
+        </div>
+  
+        <div class="input-field">
+          <input type="text" name="firstname" required />
+          <label>Име</label>
+        </div>
+  
+        <div class="input-field">
+          <input type="text" name="lastname" required />
+          <label>Фамилия</label>
+        </div>
+  
+        <div class="input-field">
+          <input type="password" name="password" required />
+          <label>Парола</label>
+        </div>
+  
+        <div class="input-field">
+          <input type="password" name="password1" required />
+          <label>Потвърди паролата</label>
+        </div>
+  
+        <div class="forget">
+          <label for="remember">
+            <input type="checkbox" id="remember" />
+            <p>Запомни ме</p>
+          </label>
+        </div>
+  
+        <button type="submit">Register</button>
+  
+        <div class="register">
+          <p>Имаш акаунт? <a href="{% url 'login_view' %}">Влез в акаунта си</a></p>
+        </div>
+      </form>
+    </div>
+  </body>
+  </html>

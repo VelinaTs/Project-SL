@@ -7,3 +7,35 @@
     <title>FYRE-login</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
+<body>
+    <div class="wrapper">
+      <form action="{% url 'login_view' %}" method="post">
+        {% csrf_token %}
+        {% if error %}
+        <div class="error">
+          <p>{{ error }}</p>
+        </div>
+      {% endif %}
+        <h2>Login</h2>
+          <div class="input-field">
+          <input type="text"name ="username" required>
+          <label>Username</label>
+        </div>
+        <div class="input-field">
+          <input type="password" name ="password" required>
+          <label>Password</label>
+        </div>
+        <div class="forget">
+          <label for="remember">
+            <input type="checkbox" id="remember">
+            <p>Запомни ме</p>
+          </label>
+        </div>
+        <button type="submit">Log In</button>
+        <div class="register">
+          <p>Нямаш акаунт? <a href={% url 'singup_view' %}>Регистрирай се</a></p>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

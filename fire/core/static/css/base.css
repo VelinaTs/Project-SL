@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Orbitron', sans-serif;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+  background: radial-gradient(circle at center, #0f0f0f 0%, #000000 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
+}
+
+h1 {
+  font-size: 4rem;
+  letter-spacing: 8px;
+  margin-bottom: 60px;
+  text-shadow: 0 0 10px #ff5f1f, 0 0 20px #ff5f1f;
+  color: #fff;
+  animation: flicker 2s infinite alternate;
+}
+
+@keyframes flicker {
+  0% { opacity: 1; text-shadow: 0 0 10px #ff5f1f, 0 0 20px #ff5f1f; }
+  100% { opacity: 0.85; text-shadow: 0 0 5px #ff5f1f, 0 0 10px #ff5f1f; }
+}
+
+.buttons {
+  display: flex;
+  gap: 30px;
+}
+
+button {
+  padding: 14px 30px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #ff5f1f;
+  color: #fff;
+  box-shadow: 0 0 15px #ff5f1f80;
+  transition: 0.3s ease;
+}
+
+button:hover {
+  background: #ff784e;
+  box-shadow: 0 0 25px #ff5f1f, 0 0 40px #ff5f1f;
+  transform: scale(1.05);
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2.5rem;
+    text-align: center;
+  }
+  .buttons {
+    flex-direction: column;
+    gap: 20px;
+  }
+  button {
+    width: 80%;
+  }
+}
