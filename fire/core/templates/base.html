@@ -2,17 +2,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>FYRE</title>
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
 </head>
-
 <body>
-    <h1>FYRE</h1>
-    <div class="buttons">
-    <button id="login-button" onclick="window.location.href='/login'">Log in / Register</button>
-    <button id="guest-button" onclick="window.location.href='/home'">Continue as Guest</button>
+    <div class="container">
+        <header>
+            <h1>FYRE</h1>
+            <p class="tagline">Manage fire incidents with ease and efficiency</p>
+        </header>
+        <main>
+            <div class="buttons">
+                <button id="login-button" onclick="window.location.href='/login'">Log in / Register</button>
+                <button id="guest-button" onclick="window.location.href='/home'">Continue as Guest</button>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2025 FYRE. All rights reserved.</p>
+        </footer>
     </div>
-    
 </body>
+</html>

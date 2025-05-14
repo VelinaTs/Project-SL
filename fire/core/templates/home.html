@@ -7,3 +7,28 @@
     <title>FYRE-home</title>
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
 </head>
+<body>
+  <div class="nav">
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+  </div>
+
+  <section id="home">
+    <div class="typing">We are FYRE</div>
+    <div class="scroll-down">↓ Scroll down</div>
+  </section>
+
+  <section id="about" style="background-color: #1a1a1a;">
+    <h1>About Us</h1>
+  </section>
+
+  <section id="projects" style="background-color: #2a2a2a;">
+    <h1>Our Projects</h1>
+  </section>
+  {% if user.role == 'admin' %}
+  <section id="admin" style="background-color: #3a3a3a;">
+    <h1>Admin Section</h1>
+    <p>Welcome, Admin! Here you can manage the system.</p>
+    {% endif %}
+</body>
+</html>

@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login
 from .models import User
 import json 
 from bs4 import BeautifulSoup #html v python X
+from django.contrib.auth.decorators import login_required
 
 soup = BeautifulSoup('save_chas.html', 'html.parser') #tyrsene v html
 
@@ -77,11 +78,14 @@ def save_chas_view(request):
     
     return render(request, 'save_chas.html')
 
+def home_view(request):
+    return render(request, 'home.html')
+
+@login_required
 def chat_view(request):
     return render(request, 'chat.html')
 
-def home_view(request):
-    return render(request, 'home.html')
+
 
 
 
