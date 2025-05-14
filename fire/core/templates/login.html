@@ -12,7 +12,7 @@
       <form action="{% url 'login_view' %}" method="post">
         {% csrf_token %}
         {% if error %}
-        <div class="error">
+        <div class="error" style="color: red;">
           <p>{{ error }}</p>
         </div>
       {% endif %}

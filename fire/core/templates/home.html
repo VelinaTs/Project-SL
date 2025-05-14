@@ -25,10 +25,10 @@
   <section id="projects" style="background-color: #2a2a2a;">
     <h1>Our Projects</h1>
   </section>
-  {% if user.role == 'admin' %}
+  {% if request.user.role == 'admin' %}
   <section id="admin" style="background-color: #3a3a3a;">
     <h1>Admin Section</h1>
     <p>Welcome, Admin! Here you can manage the system.</p>
-    {% endif %}
+  </section>
 </body>
 </html>
