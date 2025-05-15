@@ -8,27 +8,110 @@
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
 </head>
 <body>
+  {%if request.user.role == 'user'%}
   <div class="nav">
+    <a href="#home">Home</a>
     <a href="#about">About</a>
-    <a href="#projects">Projects</a>
+    <a href="#projects">Services</a>
+    <a href="/save_chas">Save Appointment</a>
+    <a href="javascript:void(0)" onclick="toggleChat()">Chat</a>
   </div>
 
   <section id="home">
-    <div class="typing">We are FYRE</div>
+    <div class="typing">Welcome to FYRE Barbershop</div>
     <div class="scroll-down">↓ Scroll down</div>
   </section>
 
-  <section id="about" style="background-color: #1a1a1a;">
+  <section id="about">
     <h1>About Us</h1>
+    <p>Classic cuts. Modern style. FYRE Barbershop brings precision, personality, and comfort together under one roof.</p>
   </section>
+  <section id="projects">
+    <h1>Our Services</h1>
+    <p>Haircuts, beard trims, shaves, and more. Discover the full experience of grooming done right.</p>
+  </section>
+  <div id="chatOverlay" class="chat-overlay" style="display: none;">
+  <div class="chat-modal-full">
+    <div class="chat-header">
+      <h2>Chat with Us</h2>
+      <span class="close-chat" onclick="toggleChat()">&times;</span>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <p><em>How can we help you today?</em></p>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="Type your message..." />
+      <button onclick="sendChat()">Send</button>
+    </div>
+  </div>
+</div>
+</body>
+<script src="{% static 'js/chat.js' %}"></script>
+{% endif %}
+{% if request.user.role == 'admin' %}
+  <nav class="admin-nav">
+    <a href="#add-barber">Add Barber</a>
+    <a href="#appointments">Appointments</a>
+  </nav>
 
-  <section id="projects" style="background-color: #2a2a2a;">
-    <h1>Our Projects</h1>
-  </section>
-  {% if request.user.role == 'admin' %}
-  <section id="admin" style="background-color: #3a3a3a;">
-    <h1>Admin Section</h1>
-    <p>Welcome, Admin! Here you can manage the system.</p>
-  </section>
+  <div class="admin-section" style="padding: 2rem; background: #222; color: white;">
+    <h1>Admin Panel</h1>
+
+    <section id="add-barber">
+      <h2>Add Barber</h2>
+      <form method="post" action="/admin/add_barber/">
+        {% csrf_token %}
+        <label for="firstname">First Name</label><br>
+        <input type="text" id="firstname" name="firstname" required><br>
+
+        <label for="lastname">Last Name</label><br>
+        <input type="text" id="lastname" name="lastname" required><br>
+
+        <label for="username">Username</label><br>
+        <input type="text" id="username" name="username" required><br>
+
+        <label for="password">Password</label><br>
+        <input type="password" id="password" name="password" required><br>
+
+        <label for="bio">Bio</label><br>
+        <textarea id="bio" name="bio" rows="4" required></textarea><br>
+        <button type="submit">Add Barber</button>
+      </form>
+    </section>
+
+    <section id="appointments" style="margin-top: 3rem;">
+      <h2>Saved Appointments</h2>
+      {% if appointments %}
+      <table border="1" cellpadding="8" cellspacing="0" style="width:100%; color: black; background: white;">
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Phone</th>
+            <th>Service</th>
+            <th>Date & Time</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for appt in appointments %}
+          <tr>
+            <td>{{ appt.first_name }}</td>
+            <td>{{ appt.last_name }}</td>
+            <td>{{ appt.phone }}</td>
+            <td>{{ appt.service }}</td>
+            <td>{{ appt.date }}</td>
+            <td>{{ appt.notes }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No appointments found.</p>
+      {% endif %}
+    </section>
+  </div>
+  {% endif %}
+  <script src="{% static 'js/chat.js' %}"></script>
 </body>
 </html>
