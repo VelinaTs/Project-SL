@@ -17,6 +17,8 @@ class User(AbstractUser):
     username = models.CharField(max_length=100, unique=True)
     password = models.CharField(max_length=100)
     saved = models.DateTimeField(null=True, blank=True)
+    bio = models.TextField(default=None, null=True, blank=True)
+    picture = models.ImageField(default=None, null=True, blank=True, upload_to="pictures_barbers/")
     def __str__(self):
         return self.username
     
