@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FYRE-home-admin</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+    {% if request.user.is_authenticated and request.user.role|default:'' == 'admin' %}
+  <nav class="admin-nav">
+    <a href="#add-barber">Добави бръснар</a>
+    <a href="#appointments">Запазени часове</a>
+  </nav>
+
+  <div class="admin-section">
+    <h1>Admin Panel</h1>
+
+    <section id="add-barber">
+      <h2>Добави бръснар</h2>
+    <form method="post" action="/add_barber/" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label for="firstname">Първо име</label><br>
+      <input type="text" id="firstname" name="firstname" required><br>
+
+      <label for="lastname">Последно име</label><br>
+      <input type="text" id="lastname" name="lastname" required><br>
+
+      <label for="username">Имейл</label><br>
+      <input type="text" id="username" name="username" required><br>
+
+      <label for="password">Парола</label><br>
+      <input type="password" id="password" name="password" required><br>
+
+      <label for="bio">Кратко описание</label><br>
+      <textarea id="bio" name="bio" rows="4" required></textarea><br>
+
+      <label for="picture" class="picture-btn">Снимка<br>
+      <input type="file" id="picture" name="picture" accept="image/*" required><br>
+      </label>
+
+      <img id="picture-preview" src="#" alt="Preview" style="display:none; max-width:150px; max-height:150px; margin-top:10px;"/>
+
+<script>
+  const input = document.getElementById('picture');
+  const preview = document.getElementById('picture-preview');
+
+  input.addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.setAttribute('src', e.target.result);
+        preview.style.display = 'block';
+      }
+      reader.readAsDataURL(file);
+    } else {
+      preview.style.display = 'none';
+      preview.setAttribute('src', '#');
+    }
+  });
+</script>
+
+      <button type="submit">Добави</button>
+    </form>
+    </section>
+
+    <section id="appointments" style="margin-top: 3rem;">
+      <h2>Запазени часове</h2>
+      {% if appointments %}
+      <table border="1" cellpadding="8" cellspacing="0" style="width:100%; color: black; background: white;">
+        <thead>
+          <tr>
+            <th>Първо име</th>
+            <th>Последно име</th>
+            <th>Телефон</th>
+            <th>Услуга</th>
+            <th>Дата и час</th>
+            <th>Бръснар</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for appt in appointments %}
+          <tr>
+            <td>{{ appt.first_name }}</td>
+            <td>{{ appt.last_name }}</td>
+            <td>{{ appt.phone }}</td>
+            <td>{{ appt.service }}</td>
+            <td>{{ appt.date }}</td>
+            <td>{{ appt.barber }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>Няма часове.</p>
+      {% endif %}
+    </section>
+  </div>
+  {% endif %}
+</body>
+</html>

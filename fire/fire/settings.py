@@ -13,12 +13,14 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import environ
 import dj_database_url
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 env=environ.Env()
 environ.Env.read_env(BASE_DIR / '.env')
 
+OPENAI_API_KEY = env('OPENAI_API_KEY')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -32,6 +34,8 @@ ALLOWED_HOSTS = ['192.168.68.123', 'localhost', '127.0.0.1']
 
 AUTH_USER_MODEL = 'core.User'
 # Application definition
+
+LOGIN_URL = '/login/'
 
 INSTALLED_APPS = [
     'django.contrib.admin',

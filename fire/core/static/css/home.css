@@ -1,137 +1,614 @@
-/* Import font consistent with base.css */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
-
 body {
-  font-family: 'Orbitron', sans-serif;
-  background: radial-gradient(circle at center, #121212 0%, #0f0f0f 100%);
-  color: #b8b8b8;
+  top: 0 !important;
+  position: static !important;
   margin: 0;
-  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #fff;
+  scroll-behavior: smooth;
+  display: flex;
+  flex-direction: column;
+
+  /* Static multi-color gradient background */
+  background: linear-gradient(
+    to bottom,
+    #7A306C,  /* purple */
+    #3c7a89,  /* blue */
+    #e75480,  /* pink */
+    #e0a800   /* yellow */
+  );
+  background-size: 100% 100%;
 }
 
-header {
-  text-align: center;
-  padding: 40px 20px 20px 20px;
-  background: #1e1e1e;
-  box-shadow: 0 0 20px #7a306c80;
-  border-bottom: 2px solid #7a306c;
+.lang-toggle {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  background-color: #7A306C;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+  z-index: 11000;
 }
 
-header h1 {
-  font-size: 4rem;
-  letter-spacing: 8px;
-  color: #7a306c;
-  text-shadow: 0 0 15px #7a306c, 0 0 30px #7a306c;
-  animation: flicker 2s infinite alternate;
-  margin-bottom: 10px;
+.lang-toggle:hover {
+  background-color: #3c7a89;
 }
 
-nav ul {
-  list-style: none;
+.nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 30px;
-  padding: 0;
-  margin: 0;
+  padding: 1rem 0;
+  z-index: 1000;
+  background-color: transparent;
+  backdrop-filter: blur(1000rem);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
-nav ul li a {
-  color: #7a306c;
+.nav a {
+  color: #fff;
   text-decoration: none;
-  font-weight: 600;
-  font-size: 1.2rem;
-  transition: color 0.3s ease;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-nav ul li a:hover {
-  color: #3c7a89;
-  text-shadow: 0 0 10px #7a306c;
-}
-
-main {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 0 20px;
+.nav a:hover {
+  background-color: #3c7a89;
+  color: #fff;
 }
 
 section {
-  margin-bottom: 50px;
-  background: #1e1e1e;
-  padding: 30px 25px;
-  border-radius: 15px;
-  box-shadow: 0 0 20px #7a306c40;
-  border: 1px solid #7a306c30;
+  padding: 100px 20px;
+  min-height: 100vh;
+  text-align: center;
 }
 
-section h2 {
-  color: #7a306c;
+#home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.typing {
+  font-size: 3rem;
+  font-weight: bold;
+  animation: typing 3s steps(20), blink 0.75s step-end infinite alternate;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid;
+  max-width: 90%;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+.scroll-down {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  color: #f0f0f0;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+section h1 {
   font-size: 2.5rem;
   margin-bottom: 20px;
-  text-shadow: 0 0 10px #7a306c;
+  color: #f0f0f0;
 }
 
-section p, section ul {
-  font-size: 1.2rem;
-  line-height: 1.6;
-  color: #b8b8b8;
+#admin {
+  justify-content: center;
 }
 
-section ul {
-  padding-left: 20px;
+.chat-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
-section ul li {
-  margin-bottom: 10px;
+.chat-modal-full {
+  background-color: #2a2a2a;
+  width: 80%;
+  max-width: 600px;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  background: rgba(185, 185, 185, 0.574);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8.6px);
+  -webkit-backdrop-filter: blur(8.6px);
+  display: flex;
+  flex-direction: column;
+  height: 80%;
 }
 
-a.button {
-  display: inline-block;
-  padding: 14px 30px;
-  margin-right: 20px;
-  font-size: 1.1rem;
-  border-radius: 10px;
-  background: #7a306c;
-  color: #b8b8b8;
+.chat-box-wrapper {
+  height: 80vh;
+  width: 100%;
+  max-width: 600px;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  border-bottom: 1px solid #444;
+  padding-bottom: 0.5rem;
+}
+
+.close-chat {
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #000000;
+}
+
+.chat-messages {
+  flex: 1;
+  margin: 1rem 0;
+  overflow-y: auto;
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8.6px);
+  -webkit-backdrop-filter: blur(8.6px);
+  padding: 1rem;
+  border-radius: 8px;
+  color: #eee;
+}
+
+.chat-input {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 6px;
+}
+
+.chat-input button {
+  background-color: #7A306C;
+  border: none;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.chat-input button:hover {
+  background-color: #3c7a89;
+}
+
+.admin-nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding: 1rem 0;
+  z-index: 1000;
+  background-color: transparent;
+  backdrop-filter: blur(1000rem);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.admin-nav a {
+  color: #fff;
   text-decoration: none;
-  box-shadow: 0 0 15px #7a306c80;
-  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.admin-nav a:hover {
+  background-color: #3c7a89;
+  color: #fff;
+}
+
+.admin-section {
+  justify-content: center;
+  align-items: center;
+  background-color: #2a2a2a;
+  width: 80%;
+  max-width: 600px;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8.6px);
+  -webkit-backdrop-filter: blur(8.6px);
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+}
+
+.picture-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4a90e2;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.picture-btn:hover {
+  background-color: #357ABD;
+}
+
+.picture-btn input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
   cursor: pointer;
 }
 
-a.button:hover {
-  background: #3c7a89;
-  box-shadow: 0 0 25px #3c7a89, 0 0 40px #3c7a89;
-  transform: scale(1.05);
+
+
+/* Card Container */
+.barber-card {
+  width: 250px;
+  height: 350px;
+  perspective: 1000px;
+  margin: 0 auto;
+}
+
+/* Inner flip mechanism */
+.flip-card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Flip on hover */
+.barber-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Front and Back faces */
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+}
+
+/* Front styling */
+.flip-card-front {
+  background: #fff;
+  color: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* Image wrapper */
+.flip-card-front .barber-image-wrapper {
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.flip-card-front .barber-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* Role badge */
+.flip-card-front .barber-role {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #000;
+  color: #fff;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 4px;
+}
+
+/* Barber name */
+.barber-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #000;
+  margin-top: 10px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  user-select: none;
+}
+
+/* Back face styling */
+.flip-card-back {
+  background: #2a2a2a;
+  color: #eee;
+  transform: rotateY(180deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-size: 14px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.7);
+  box-sizing: border-box;
+}
+
+
+.reserve-btn {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.1);
+  color: #000;
+  padding: 10px 20px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  transition: all 0.4s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+}
+
+.reserve-btn::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -25%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(120deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 60%);
+  transform: skewX(-25deg);
+  transition: all 0.5s ease;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.reserve-btn:hover {
+  color: #e0a800;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #e0a800;
+  box-shadow: 0 8px 40px 0 rgba(224, 168, 0, 0.6);
+}
+
+.reserve-btn:hover::before {
+  opacity: 1;
+  left: 150%;
+  transition: all 0.7s ease;
+}
+
+.barber-bio {
+  font-size: 14px;
+  color: #eee;
+  margin-top: 10px;
+  text-align: center;
+  line-height: 1.5;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.barber-name {
+  margin: 10px 0 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #000; /* black or a visible color */
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+/* Ensure name is visible on hover (flip) */
+.barber-card:hover .flip-card-inner .barber-name {
+  color: #000; /* or keep it same */
+}
+
+/* Optional: reduce margin bottom from image-wrapper if needed */
+.flip-card-front .barber-image-wrapper {
+  margin-bottom: 5px; /* smaller to fit name */
+}
+
+.barbers-wrapper {
+  width: calc(4 * 265px);
+  overflow-x: hidden;
+  margin: 0 auto;
+}
+
+.barbers-wrapper {
+  overflow-x: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE 10+ */
+}
+
+.barbers-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Headings */
+.admin-section h1,
+.admin-section h2 {
+  color: #e0a800; /* warm gold/yellow */
+  margin-bottom: 1rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+/* Form Styling */
+.admin-section form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.admin-section label {
+  flex-basis: 100%;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.admin-section input[type="text"],
+.admin-section input[type="password"],
+.admin-section textarea {
+  flex-grow: 1;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #555;
+  border-radius: 6px;
+  background-color: #2e2e2e;
+  color: #eee;
+  transition: border-color 0.3s ease;
+}
+
+.admin-section input[type="text"]:focus,
+.admin-section input[type="password"]:focus,
+.admin-section textarea:focus {
+  border-color: #e0a800;
+  outline: none;
+}
+
+.admin-section button {
+  background-color: #e0a800;
+  border: none;
+  color: #222;
+  font-weight: 700;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  align-self: flex-start;
+  margin-top: 1.5rem;
+}
+
+.admin-section button:hover {
+  background-color: #c29400;
+}
+
+/* Appointments Table */
+.admin-section table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #222;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.admin-section table thead {
+  background-color: #e0a800;
+  color: #222;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.admin-section table th,
+.admin-section table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.admin-section table tbody tr:hover {
+  background-color: #f9f2b2;
 }
 
 footer {
-  text-align: center;
-  padding: 20px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 1rem;
-  color: #b8b8b8;
-  border-top: 1px solid #333;
-  box-shadow: inset 0 5px 10px #7a306c20;
-  margin-top: 40px;
-}
-
-@keyframes flicker {
-  0% { opacity: 1; text-shadow: 0 0 15px #7a306c, 0 0 30px #7a306c; }
-  100% { opacity: 0.85; text-shadow: 0 0 7px #7a306c, 0 0 15px #7a306c; }
-}
-
-@media (max-width: 600px) {
-  header h1 {
-    font-size: 2.5rem;
-  }
-  main {
-    margin: 20px 10px;
-    padding: 0 10px;
-  }
-  section h2 {
-    font-size: 1.8rem;
-  }
-  a.button {
-    width: 100%;
-    margin-bottom: 15px;
-  }
+  font-family: 'Courier New', Courier, monospace;
 }

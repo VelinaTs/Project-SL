@@ -7,3 +7,70 @@
     <title>FYRE-save</title>
     <link rel="stylesheet" href="{% static 'css/save_chas.css' %}">
 </head>
+<body>
+
+  <nav class="nav">
+    <a href="/home">Home</a>
+    <a href="/save_chas">Save Appointment</a>
+    <a href="javascript:void(0)" onclick="toggleChat()">Чат с AI</a>
+  </nav>
+
+  <header>FYRE</header>
+
+  <main>
+    <h1>Book Your Appointment</h1>
+    <form method="post" action="/save_chas/">
+  {% csrf_token %}
+
+  {% if not request.user.is_authenticated %}
+  <label for="firstname">First Name</label>
+  <input type="text" id="firstname" name="firstname" placeholder="Your first name" required />
+
+  <label for="lastname">Last Name</label>
+  <input type="text" id="lastname" name="lastname" placeholder="Your last name" required />
+  {% endif %}
+
+  <label for="phone">Phone Number</label>
+  <input type="tel" id="phone" name="phone" placeholder="+359 888 123 456" required />
+
+  <label for="service">Select Service</label>
+  <select id="service" name="service" required>
+    <option value="" disabled selected>Choose a service</option>
+    <option value="haircut">Haircut</option>
+    <option value="beard_trim">Beard Trim</option>
+    <option value="shave">Shave</option>
+    <option value="coloring">Coloring</option>
+  </select>
+
+  <label for="date">Date</label>
+  <input type="date" id="date" name="date" required />
+
+  <label for="time">Time</label>
+  <input type="time" id="time" name="time" required />
+
+  <label for="notes">Additional Notes</label>
+  <textarea id="notes" name="notes" placeholder="Any preferences or notes..." rows="4"></textarea>
+
+  <button type="submit">Save Appointment</button>
+</form>
+  </main>
+  <div id="chatOverlay" class="chat-overlay" style="display: none;">
+  <div id="chatBox" class="chat-box-wrapper">
+    <div class="chat-modal-full">
+      <div class="chat-header">
+        <h2>Chat with Us</h2>
+        <span class="close-chat" onclick="toggleChat()">&times;</span>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <p><em>Обясни ни за косата си и ние ще изберем правилния бръснар за вас?</em></p>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Type your message..." />
+        <button onclick="sendChat()">Изпрати</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{% static 'js/chat.js' %}"></script>
+</body>
+</html>
