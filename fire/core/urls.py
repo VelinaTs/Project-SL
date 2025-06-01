@@ -13,4 +13,4 @@ urlpatterns = [
     path('home/', views.home_view, name='home_view'),
     path('home_admin/', views.home_admin_view, name='home_admin_view'),
     path('add_barber/', views.add_barber_view, name='add_barber_view'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] 
