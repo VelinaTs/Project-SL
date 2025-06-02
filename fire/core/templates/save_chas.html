@@ -1,4 +1,5 @@
 {% load static %}
+{% load filter %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,69 +9,152 @@
     <link rel="stylesheet" href="{% static 'css/save_chas.css' %}">
 </head>
 <body>
+    <nav class="nav">
+        <a href="/home">Начало</a>
+        <a href="javascript:void(0)" onclick="toggleChat()">Чат с AI</a>
+    </nav>
 
-  <nav class="nav">
-    <a href="/home">Home</a>
-    <a href="/save_chas">Save Appointment</a>
-    <a href="javascript:void(0)" onclick="toggleChat()">Чат с AI</a>
-  </nav>
+    <header>FYRE</header>
 
-  <header>FYRE</header>
+    <main>
+        <h1>Запази час</h1>
+        {% if success %}
+            <p class="success-message">{{ success }}</p>
+        {% endif %}
+        
+        <form method="post" action="/save_chas/">
+            {% csrf_token %}
 
-  <main>
-    <h1>Book Your Appointment</h1>
-    <form method="post" action="/save_chas/">
-  {% csrf_token %}
+            {% if not request.user.is_authenticated %}
+                <label for="firstname">Първо име</label>
+                <input type="text" id="firstname" name="firstname" placeholder="Име" required />
 
-  {% if not request.user.is_authenticated %}
-  <label for="firstname">First Name</label>
-  <input type="text" id="firstname" name="firstname" placeholder="Your first name" required />
+                <label for="lastname">Фамилно име</label>
+                <input type="text" id="lastname" name="lastname" placeholder="Фамилия" required />
+            {% endif %}
 
-  <label for="lastname">Last Name</label>
-  <input type="text" id="lastname" name="lastname" placeholder="Your last name" required />
-  {% endif %}
+            <label for="phone">Телефонен номер</label>
+            <input type="tel" id="phone" name="phone" placeholder="+359 888 123 456" required />
 
-  <label for="phone">Phone Number</label>
-  <input type="tel" id="phone" name="phone" placeholder="+359 888 123 456" required />
+            <label for="service">Изберете услуга</label>
+            <select id="service" name="service" required>
+                <option value="" disabled selected>Изберете услуга</option>
+                <option value="haircut">Косопад</option>
+                <option value="beard_trim">Подстригване на брада</option>
+                <option value="shave">Бръснене</option>
+                <option value="coloring">Оцветяване</option>
+            </select>
 
-  <label for="service">Select Service</label>
-  <select id="service" name="service" required>
-    <option value="" disabled selected>Choose a service</option>
-    <option value="haircut">Haircut</option>
-    <option value="beard_trim">Beard Trim</option>
-    <option value="shave">Shave</option>
-    <option value="coloring">Coloring</option>
-  </select>
+            <div class="date-selector">
+                <input type="date" id="datePicker" class="date-input">
+                <button type="button" class="date-button" onclick="updateDate()">Избери дата</button>
+                <span id="selectedDateDisplay" class="selected-date"></span>
+            </div>
 
-  <label for="date">Date</label>
-  <input type="date" id="date" name="date" required />
+<div class="daily-schedule">
+    {% for barber in barbers %}
+    <div class="barber-row">
+        <div class="barber-name">{{ barber.firstname }}</div>
+        <div class="time-slots">
+            {% for hour in "10,11,12,13,14,15,16,17,18,19"|split:"," %}
+            <div class="time-slot" 
+                 data-barber-id="{{ barber.id }}" 
+                 data-barber-name="{{ barber.firstname }}"
+                 data-time="{{ hour }}:00">
+                {{ hour }}:00-{{ hour|add:"1" }}:00
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
 
-  <label for="time">Time</label>
-  <input type="time" id="time" name="time" required />
+            <input type="hidden" id="selectedDate" name="date">
+            <input type="hidden" id="selectedTime" name="time">
+            <input type="hidden" id="selectedBarber" name="barber_id" required>
+            <input type="hidden" id="selectedBarberName" name="barber_name">
 
-  <label for="notes">Additional Notes</label>
-  <textarea id="notes" name="notes" placeholder="Any preferences or notes..." rows="4"></textarea>
+            <label for="notes">Допълнителни бележки</label>
+            <textarea id="notes" name="notes" placeholder="Вашите предпочитания или бележки..." rows="4"></textarea>
 
-  <button type="submit">Save Appointment</button>
-</form>
-  </main>
+            <button type="submit">Запази час</button>
+        </form>
+    </main>
+
   <div id="chatOverlay" class="chat-overlay" style="display: none;">
-  <div id="chatBox" class="chat-box-wrapper">
-    <div class="chat-modal-full">
-      <div class="chat-header">
-        <h2>Chat with Us</h2>
-        <span class="close-chat" onclick="toggleChat()">&times;</span>
-      </div>
-      <div class="chat-messages" id="chatMessages">
-        <p><em>Обясни ни за косата си и ние ще изберем правилния бръснар за вас?</em></p>
-      </div>
-      <div class="chat-input">
-        <input type="text" id="chatInput" placeholder="Type your message..." />
-        <button onclick="sendChat()">Изпрати</button>
+    <div id="chatBox" class="chat-box-wrapper">
+      <div class="chat-modal-full">
+        <div class="chat-header">
+          <h2>Chat with Us</h2>
+          <span class="close-chat" onclick="toggleChat()">&times;</span>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          <p><em>Обясни ни за косата си и ние ще изберем правилния бръснар за вас?</em></p>
+        </div>
+        <div class="chat-input">
+          <input type="text" id="chatInput" placeholder="Type your message..." />
+          <button onclick="sendChat()">Изпрати</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<script src="{% static 'js/chat.js' %}"></script>
+
+  <script src="{% static 'js/chat.js' %}"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const selectedDate = document.getElementById('selectedDate');
+    const selectedTime = document.getElementById('selectedTime');
+    const selectedBarber = document.getElementById('selectedBarber');
+    const selectedBarberName = document.getElementById('selectedBarberName');
+    const datePicker = document.getElementById('datePicker');
+    const selectedDateDisplay = document.getElementById('selectedDateDisplay');
+    
+    // Set today's date by default
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+    selectedDate.value = formattedDate;
+    datePicker.value = formattedDate;
+    updateDateDisplay(today);
+
+    // Handle time slot selection
+    document.querySelectorAll('.time-slot').forEach(slot => {
+        slot.addEventListener('click', function() {
+            // Remove previous selections
+            document.querySelectorAll('.time-slot.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            // Add selected class to clicked slot
+            this.classList.add('selected');
+
+            // Update hidden inputs
+            const barberId = this.dataset.barberId;
+            const barberName = this.dataset.barberName;
+            const time = this.dataset.time;
+
+            selectedTime.value = time;
+            selectedBarber.value = barberId;
+            selectedBarberName.value = barberName;
+        });
+    });
+});
+
+function updateDate() {
+    const datePicker = document.getElementById('datePicker');
+    const selectedDate = document.getElementById('selectedDate');
+    const selectedDateDisplay = document.getElementById('selectedDateDisplay');
+    
+    const date = new Date(datePicker.value);
+    selectedDate.value = datePicker.value;
+    updateDateDisplay(date);
+}
+
+function updateDateDisplay(date) {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const formattedDate = date.toLocaleDateString('bg-BG', options);
+    selectedDateDisplay.textContent = formattedDate;
+}
+</script>
+
 </body>
 </html>

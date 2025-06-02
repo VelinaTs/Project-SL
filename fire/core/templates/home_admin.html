@@ -1,4 +1,4 @@
-{% load static %}
+{%load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +10,7 @@
 <body>
     {% if request.user.is_authenticated and request.user.role|default:'' == 'admin' %}
   <nav class="admin-nav">
+    <a href="/home">Начало</a>
     <a href="#add-barber">Добави бръснар</a>
     <a href="#appointments">Запазени часове</a>
   </nav>

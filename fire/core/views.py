@@ -77,36 +77,39 @@ def singup_view(request):
         return render(request, 'singup.html')
 
 def save_chas_view(request):
-    html = render_to_string('save_chas.html', {'request': request})
-    soup = BeautifulSoup(html, 'html.parser') #tyrsene v html
-    phone = request.POST.get('phone')
-    date = request.POST.get('date')
-    time = request.POST.get('time')
-    if request.user.is_authenticated:
-        first_input = soup.find(id='firstname')
-        if first_input:
-            first_input.decompose()
-        last_input = soup.find(id='lastname')
-        if last_input:
-            last_input.decompose()
-        firstname = request.user.firstname
-        lastname = request.user.lastname
-    else:
-        firstname = request.POST.get('firstname')
-        lastname = request.POST.get('lastname')
-        
-    if request.method == 'POST':
-        SaveChas.objects.create(     # zapazvame v bazata danni
-            phone=phone,
-            date=date,
-            time=time,
-            firstname=firstname,
-            lastname=lastname,
-            barber=request.user if hasattr(request.user, 'role') and request.user.role == 'barber' else None
-        )
-        return render(request, 'save_chas.html', {'success': 'Appointment saved successfully!'})
+        html = render_to_string('save_chas.html', {'request': request})
+        soup = BeautifulSoup(html, 'html.parser') #tyrsene v html
+        print("POST data:", request.POST)
+        phone = request.POST.get('phone')
+        date = request.POST.get('date')
+        time = request.POST.get('time')
+        barbers = User.objects.filter(role='barber')  # vzimame vsichki barberi 
+        if request.user.is_authenticated:
+            first_input = soup.find(id='firstname')
+            if first_input:
+                first_input.decompose()  # removing the input field from the HTML
+            last_input = soup.find(id='lastname')
+            if last_input:
+                last_input.decompose()
+            firstname = request.user.firstname
+            lastname = request.user.lastname
+        else:
+            firstname = request.POST.get('firstname')
+            lastname = request.POST.get('lastname')  
+        barber_id = request.POST.get('barber_id')  # Get barber_id instead of barber_name 
+        print("barber_id:", barber_id)
+        if request.method == 'POST':
+            SaveChas.objects.create(     # zapazvame v bazata danni
+                phone=phone,
+                date=date,
+                time=time,
+                firstname=firstname,
+                lastname=lastname,
+                barber=User.objects.filter(id=barber_id).first() if barber_id else None
+            )
+            return render(request, 'save_chas.html', {'success': 'Appointment saved successfully!', 'barbers': barbers}) 
 
-    return render(request, 'save_chas.html')
+        return render(request, 'save_chas.html', {'barbers': barbers}) 
 
 def remove_chas_view(request):
     if request.method == 'POST':
@@ -160,6 +163,7 @@ def home_view(request):
 def home_admin_view(request):
     return render(request, 'home_admin.html')
 
+@csrf_exempt
 @login_required
 def chat_view(request):
     if request.method == 'POST':
