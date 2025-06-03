@@ -329,3 +329,14 @@ button:hover {
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 128, 0, 0.2);
 }
+.error-message {
+    background-color: #edd4d4;      /* Light green background */
+    color: #571515;                 /* Dark green text */
+    border: 1px solid #e6c3c3;     /* Green border */
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 128, 0, 0.2);
+}

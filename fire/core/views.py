@@ -12,6 +12,8 @@ from django.views.decorators.csrf import csrf_exempt
 from openai import OpenAI
 import email
 import json
+from django.contrib.auth import logout as django_logout
+import logger 
 
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
@@ -77,13 +79,17 @@ def singup_view(request):
         return render(request, 'singup.html')
 
 def save_chas_view(request):
+    if request.method == 'POST':
+        barbers = User.objects.filter(role='barber')  # vzimame vsichki barberi 
         html = render_to_string('save_chas.html', {'request': request})
         soup = BeautifulSoup(html, 'html.parser') #tyrsene v html
         print("POST data:", request.POST)
         phone = request.POST.get('phone')
+        phone = f'+359{phone}' if len(phone) == 9 else None
+        if not phone:
+            return render(request, 'save_chas.html', {'error': 'Invalid phone number'}, {'barbers': barbers}, status=400)
         date = request.POST.get('date')
         time = request.POST.get('time')
-        barbers = User.objects.filter(role='barber')  # vzimame vsichki barberi 
         if request.user.is_authenticated:
             first_input = soup.find(id='firstname')
             if first_input:
@@ -97,7 +103,7 @@ def save_chas_view(request):
             firstname = request.POST.get('firstname')
             lastname = request.POST.get('lastname')  
         barber_id = request.POST.get('barber_id')  # Get barber_id instead of barber_name 
-        print("barber_id:", barber_id)
+        print("barber_id:", barber_id) 
         if request.method == 'POST':
             SaveChas.objects.create(     # zapazvame v bazata danni
                 phone=phone,
@@ -108,7 +114,8 @@ def save_chas_view(request):
                 barber=User.objects.filter(id=barber_id).first() if barber_id else None
             )
             return render(request, 'save_chas.html', {'success': 'Appointment saved successfully!', 'barbers': barbers}) 
-
+    else:
+        barbers = User.objects.filter(role='barber')
         return render(request, 'save_chas.html', {'barbers': barbers}) 
 
 def remove_chas_view(request):
@@ -126,6 +133,34 @@ def remove_chas_view(request):
         return render(request, 'save_chas.html', {'success': 'Appointment removed successfully!'})
     else:
         return render(request, 'save_chas.html', {'error': 'Invalid request'}, status=400)
+    
+def display_saved_chas_view(request):
+    user = request.user
+    year = request.GET.get('year')
+    month = request.GET.get('month')
+    day = request.GET.get('day')
+    hour = request.GET.get('hour')
+    if not day or not month or not year or not hour:
+        logger.warning("Invalid request") 
+    else:
+        day = int(day)
+        month = int(month)
+        year = int(year)
+        hour = int(hour)
+        
+        chas = SaveChas.objects.filter(
+            date__day = day,
+            date__month = month,
+            date__year = year,
+            time__hour = hour 
+        )
+        chasove = []
+        for chas in chas:
+            den = chas.date.strftime('%d.%m.%Y')
+            hours = chas.time.strftime('%H')
+            chasove.append(den)
+            chasove.append(hours)
+        return JsonResponse({'chasove': chasove}, {'user': user}, status=200)
 
 def add_barber_view(request):
     if request.method == 'POST':
@@ -155,7 +190,12 @@ def remove_barber_view(request):
             return render(request, 'home.html', {'alert': 'Barber removed successfully!'})
         except Exception as e:
             return render(request, 'home.html', {'error': f'Error removing barber: {str(e)}'}, status=401)
-
+        
+def logout(request):        
+    if request.user.is_authenticated:
+        django_logout(request)
+    return redirect('login_view')
+            
 def home_view(request):
     barbers = User.objects.filter(role='barber')
     return render(request, 'home.html', {'barbers': barbers})

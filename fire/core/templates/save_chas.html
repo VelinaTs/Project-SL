@@ -21,6 +21,9 @@
         {% if success %}
             <p class="success-message">{{ success }}</p>
         {% endif %}
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
         
         <form method="post" action="/save_chas/">
             {% csrf_token %}
@@ -34,7 +37,7 @@
             {% endif %}
 
             <label for="phone">Телефонен номер</label>
-            <input type="tel" id="phone" name="phone" placeholder="+359 888 123 456" required />
+            <input type="tel" id="phone" name="phone" placeholder="(+359) 888 123 456" required>
 
             <label for="service">Изберете услуга</label>
             <select id="service" name="service" required>
