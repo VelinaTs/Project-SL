@@ -342,7 +342,7 @@ button:hover {
 }
 
 .time-slot.active {
-    background-color: #fff5b9;
+    background-color: #056b6d;
     cursor: not-allowed;
 }
 

@@ -37,7 +37,15 @@
             {% endif %}
 
             <label for="phone">Телефонен номер</label>
-            <input type="tel" id="phone" name="phone" placeholder="(+359) 888 123 456" required>
+            <div class="phone-input-wrapper">
+                <span class="phone-prefix">(+359)</span>
+            <input type="tel" id="phone" name="phone" placeholder="888 123 456" required>
+            </div>
+
+            {% if request.user.is_authenticated %}
+                <input type="hidden" name="firstname" value="{{ request.user.firstname }}">
+                <input type="hidden" name="lastname" value="{{ request.user.lastname }}">
+            {% endif %}
 
             <label for="service">Изберете услуга</label>
             <select id="service" name="service" required>
