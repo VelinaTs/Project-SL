@@ -13,8 +13,9 @@ from openai import OpenAI
 import email
 import json
 from django.contrib.auth import logout as django_logout
-import logger 
+import logging
 
+logger = logging.getLogger(__name__)
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=settings.OPENAI_API_KEY,
@@ -139,28 +140,29 @@ def display_saved_chas_view(request):
     year = request.GET.get('year')
     month = request.GET.get('month')
     day = request.GET.get('day')
-    hour = request.GET.get('hour')
-    if not day or not month or not year or not hour:
+    if not day or not month or not year:
         logger.warning("Invalid request") 
+        
     else:
         day = int(day)
         month = int(month)
         year = int(year)
-        hour = int(hour)
         
         chas = SaveChas.objects.filter(
             date__day = day,
             date__month = month,
-            date__year = year,
-            time__hour = hour 
+            date__year = year
         )
         chasove = []
         for chas in chas:
             den = chas.date.strftime('%d.%m.%Y')
             hours = chas.time.strftime('%H')
-            chasove.append(den)
-            chasove.append(hours)
-        return JsonResponse({'chasove': chasove}, {'user': user}, status=200)
+            barber_id = chas.barber.id
+            chas_user_id = chas.user.id if chas.user else None
+            firstname = chas.firstname
+            lastname = chas.lastname
+            chasove.append({"date": den, "hour": hours, "barber_id": barber_id, "user_id": chas_user_id, "firstname": firstname, "lastname": lastname})
+        return JsonResponse({'chasove': chasove}, status=200)
 
 def add_barber_view(request):
     if request.method == 'POST':
@@ -204,7 +206,6 @@ def home_admin_view(request):
     return render(request, 'home_admin.html')
 
 @csrf_exempt
-@login_required
 def chat_view(request):
     if request.method == 'POST':
         body = json.loads(request.body)

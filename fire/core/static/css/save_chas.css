@@ -340,3 +340,14 @@ button:hover {
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 128, 0, 0.2);
 }
+
+.time-slot.active {
+    background-color: #fff5b9;
+    cursor: not-allowed;
+}
+
+.time-slot.active-user {
+    background-color: #003366; /* dark blue */
+    color: white;
+    cursor: not-allowed;
+}

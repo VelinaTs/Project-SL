@@ -103,15 +103,19 @@
   </div>
 
   <script src="{% static 'js/chat.js' %}"></script>
+<script>
+  window.currentUserFirstname = "{% if request.user.is_authenticated %}{{ request.user.first_name|escapejs }}{% else %}{% endif %}";
+  window.currentUserLastname = "{% if request.user.is_authenticated %}{{ request.user.last_name|escapejs }}{% else %}{% endif %}";
+</script>
   <script>
-  document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const selectedDate = document.getElementById('selectedDate');
     const selectedTime = document.getElementById('selectedTime');
     const selectedBarber = document.getElementById('selectedBarber');
     const selectedBarberName = document.getElementById('selectedBarberName');
     const datePicker = document.getElementById('datePicker');
     const selectedDateDisplay = document.getElementById('selectedDateDisplay');
-    
+
     // Set today's date by default
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
@@ -119,45 +123,88 @@
     datePicker.value = formattedDate;
     updateDateDisplay(today);
 
+    // Load saved appointments for today
+    fetchSavedAppointments(today);
+
     // Handle time slot selection
     document.querySelectorAll('.time-slot').forEach(slot => {
-        slot.addEventListener('click', function() {
-            // Remove previous selections
+        slot.addEventListener('click', function () {
+            if (this.classList.contains('active') || this.classList.contains('active-user')) {
+                return; // Prevent selecting already booked slot
+            }
+
             document.querySelectorAll('.time-slot.selected').forEach(el => {
                 el.classList.remove('selected');
             });
 
-            // Add selected class to clicked slot
             this.classList.add('selected');
 
-            // Update hidden inputs
-            const barberId = this.dataset.barberId;
-            const barberName = this.dataset.barberName;
-            const time = this.dataset.time;
-
-            selectedTime.value = time;
-            selectedBarber.value = barberId;
-            selectedBarberName.value = barberName;
+            selectedTime.value = this.dataset.time;
+            selectedBarber.value = this.dataset.barberId;
+            selectedBarberName.value = this.dataset.barberName;
         });
     });
+
+    // Update date and fetch saved slots
+    window.updateDate = function () {
+        const date = new Date(datePicker.value);
+        selectedDate.value = datePicker.value;
+        updateDateDisplay(date);
+        fetchSavedAppointments(date);
+    };
+
+    function updateDateDisplay(date) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = date.toLocaleDateString('bg-BG', options);
+        selectedDateDisplay.textContent = formattedDate;
+    }
+
+    function fetchSavedAppointments(dateObj) {
+        const year = dateObj.getFullYear();
+        const month = dateObj.getMonth() + 1;
+        const day = dateObj.getDate();
+
+        fetch(`/saved/?year=${year}&month=${month}&day=${day}`)
+            .then(response => response.json())
+            .then(data => {
+                markSavedSlots(data.chasove);
+            })
+            .catch(error => {
+                console.error('Error loading saved appointments:', error);
+            });
+    }
+
+    function markSavedSlots(savedSlots) {
+    const currentUserFirstname = window.currentUserFirstname;
+    const currentUserLastname = window.currentUserLastname;
+
+    document.querySelectorAll('.time-slot').forEach(slot => {
+        slot.classList.remove('active', 'active-user');
+    });
+
+    savedSlots.forEach(saved => {
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            const slotHour = slot.dataset.time.split(':')[0];
+            const slotBarberId = slot.dataset.barberId;
+
+            if (slotHour === saved.hour && slotBarberId === String(saved.barber_id)) {
+                // Check if saved appointment belongs to current user by comparing names
+                if (
+                    saved.firstname === currentUserFirstname &&
+                    saved.lastname === currentUserLastname
+                ) {
+                    slot.classList.add('active-user');  // dark blue for current user's slot
+                } else {
+                    slot.classList.add('active');       // gray for others
+                }
+            }
+        });
+    });
+}
+
 });
-
-function updateDate() {
-    const datePicker = document.getElementById('datePicker');
-    const selectedDate = document.getElementById('selectedDate');
-    const selectedDateDisplay = document.getElementById('selectedDateDisplay');
-    
-    const date = new Date(datePicker.value);
-    selectedDate.value = datePicker.value;
-    updateDateDisplay(date);
-}
-
-function updateDateDisplay(date) {
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    const formattedDate = date.toLocaleDateString('bg-BG', options);
-    selectedDateDisplay.textContent = formattedDate;
-}
 </script>
+
 
 </body>
 </html>
