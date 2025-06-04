@@ -13,9 +13,8 @@ from openai import OpenAI
 import email
 import json
 from django.contrib.auth import logout as django_logout
-import logging
+import logger 
 
-logger = logging.getLogger(__name__)
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=settings.OPENAI_API_KEY,
@@ -142,7 +141,6 @@ def display_saved_chas_view(request):
     day = request.GET.get('day')
     if not day or not month or not year:
         logger.warning("Invalid request") 
-        
     else:
         day = int(day)
         month = int(month)
@@ -158,10 +156,7 @@ def display_saved_chas_view(request):
             den = chas.date.strftime('%d.%m.%Y')
             hours = chas.time.strftime('%H')
             barber_id = chas.barber.id
-            chas_user_id = chas.user.id if chas.user else None
-            firstname = chas.firstname
-            lastname = chas.lastname
-            chasove.append({"date": den, "hour": hours, "barber_id": barber_id, "user_id": chas_user_id, "firstname": firstname, "lastname": lastname})
+            chasove.append({"date": den, "hour": hours, "barber_id": barber_id})
         return JsonResponse({'chasove': chasove}, status=200)
 
 def add_barber_view(request):
